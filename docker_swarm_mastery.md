@@ -187,6 +187,58 @@ to a single compose file, has a bug when try merging secrets.
 
 _docker-compose -f docker-compose.yml -f docker-compose.prod.yml config > output.yml_
 
+# Section 5:18 Service updates
+Provide rolling replacements of tasks/containers
+Limit task downtime
+Will replace containers for most changes
+Has many cli options (76) to control the update
+Create options will usually change, adding -add or -rm to them
+Includes rollback and healthcheck options
+Has scale and rollback subcommands
+_docker service scale web=4_
+_docker service rollback web_
+A stack deploy to a pre-existing stack, issues a service update
+
+# Swarm Update Examples
+Update the image being used to a newer version
+_docker service update --image myapp:1.2.1 \<service-name>_
+
+Adding an environment variable and removing a port
+_docker service update --env-add NODE_ENV=production --publish-rm 8080_
+
+Scale up or down replicates of multiple services
+_docker service scale web=8 api=6_
+
+Swarm updates in a stack file
+Same command just edit the docker-compose file, then
+
+_docker stack deply -c file.yml \<stackname>_
+
+# Section 5:19 Service updates on the fly
+_docker service create -p 8088:80 --name web nginx:1.13.7_
+_docker service ls_
+
+_docker service scale web=5_
+
+_docker service update --image nginx:1.13.6 web_
+
+_docker service update --publish-rm 8088 --publish-add 9090:80_
+
+Because docker does not support rebalancing, it can be forced with the following commnd, which rolls though a completly replaces the tasks on the least used node of the cluster.
+
+_docker service update --force web_
+
+_docker service rm web_
+
+
+
+
+
+
+
+
+
+
 
 
 
