@@ -6,9 +6,7 @@ docker info
 _docker swarm init_
 
 # add a worker node
-_docker swarm join \ 
-	--token SWMTKN-1-xxxxxx \
-	--\<master-ip-addr>:2377_
+_docker swarm join --token SWMTKN-1-xxxxxx --\<master-ip-addr>:2377_
 
 # add a master node
 _docker node update --role manager \<node-id>_
@@ -16,9 +14,7 @@ _docker node update --role manager \<node-id>_
 # add a manager node
 _docker swarm join-token manager_
 
-_docker swarm join \ 
-	--token SWMTKN-1-xxxxxx \
-	--\<master-ip-addr>:2377_
+_docker swarm join --token SWMTKN-1-xxxxxx --\<master-ip-addr>:2377_
 
 # Section 2: Creating a single node cluster
 _docker node ls_
