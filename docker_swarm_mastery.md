@@ -8,17 +8,17 @@ _docker swarm init_
 # add a worker node
 _docker swarm join \ 
 	--token SWMTKN-1-xxxxxx \
-	--<master-ip-addr>:2377_
+	--\<master-ip-addr>:2377_
 
 # add a master node
-_docker node update --role manager <node-id>_
+_docker node update --role manager \<node-id>_
 
 # add a manager node
 _docker swarm join-token manager_
 
 _docker swarm join \ 
 	--token SWMTKN-1-xxxxxx \
-	--<master-ip-addr>:2377_
+	--\<master-ip-addr>:2377_
 
 # Section 2: Creating a single node cluster
 _docker node ls_
@@ -26,7 +26,7 @@ _docker node ls_
 _docker service --help_
 
 _docker service create alpine ping 8.8.8.8_
-<service-id> or <service-name>
+\<service-id> or \<service-name>
 
 _docker service ls_
 
@@ -63,6 +63,7 @@ network for container-to-container
 traffic inside a single swarm e.g. frontend-end, back-end.
 
 _docker network create --driver overlay <network-name>_
+
 _docker network ls_
 
 _docker network create --driver overlay mydrupal
