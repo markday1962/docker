@@ -30,18 +30,18 @@ _docker service create alpine ping 8.8.8.8_
 
 _docker service ls_
 
-_docker service ps <service-id>_
+_docker service ps \<service-id>_
 
-_docker service update <service-id> --replicas 3_
+_docker service update \<service-id> --replicas 3_
 
 _docker container ls_
 
-_docker service rm <service-id>_
+_docker service rm \<service-id>_
 
 # Section 3: Creating a 3-node swarm
-_docker swarm init --advertise-addr <ip-address>_
+_docker swarm init --advertise-addr \<ip-address>_
 
-_docker node update --role manager <worker-node-id>_
+_docker node update --role manager \<worker-node-id>_
 
 _docker node ls_
 
@@ -53,16 +53,16 @@ _docker node ls_
 
 _docker node ps_
 
-_docker node ps <node-id>_
+_docker node ps \<node-id>_
 
-_docker service ps <service-id>_
+_docker service ps \<service-id>_
 
 # Section 4: Networking and route meshing
 The overlay driver (--driver overlay)creates a swarm bridge 
 network for container-to-container
 traffic inside a single swarm e.g. frontend-end, back-end.
 
-_docker network create --driver overlay <network-name>_
+_docker network create --driver overlay \<network-name>_
 
 _docker network ls_
 
@@ -104,10 +104,10 @@ The docker-compose cli is not required in swarm
 A Stack can only do one swarm
 
 _docker stack deploy_
-_docker stack deploy -c <compose-file> <stack-name>_
+_docker stack deploy -c \<compose-file> \<stack-name>_
 _docker stack ls_
-_docker stack ps <stack-name>_
-_docker stack services <service-name>_
+_docker stack ps \<stack-name>_
+_docker stack services \<service-name>_
 _docker network ls_
 
 # Section 4:14 Secrets
@@ -116,10 +116,10 @@ both have security flaws as a file could be accessed later (shred) with
 echo the command and password will appear in the root bash history
 A secret file will have a single value, the secret
 When the secret is consumed by a container the value of the secret
-can be accessed at /run/secrets/<secret> this is not stored on the file
+can be accessed at /run/secrets/\<secret> this is not stored on the file
 file system but in a ram file system.
 
-_docker secret create psl_user <secret-file>_
+_docker secret create psl_user \<secret-file>_
 _echo "aDBPassWord" | docker secret create psql_password -_
 
 _docker secret ls_
