@@ -3,59 +3,59 @@ docker info
 
 # Creating the swarm
 
-docker swarm init
+_docker swarm init_
 
 # add a worker node
-docker swarm join \ 
+_docker swarm join \ 
 	--token SWMTKN-1-xxxxxx \
-	--<master-ip-addr>:2377
+	--<master-ip-addr>:2377_
 
 # add a master node
-docker node update --role manager <node-id>
+_docker node update --role manager <node-id>_
 
 # add a manager node
-docker swarm join-token manager
+_docker swarm join-token manager_
 
-docker swarm join \ 
+_docker swarm join \ 
 	--token SWMTKN-1-xxxxxx \
-	--<master-ip-addr>:2377
+	--<master-ip-addr>:2377_
 
 # Section 2: Creating a single node cluster
-docker node ls
+_docker node ls_
 
-docker service --help
+_docker service --help_
 
-docker service create alpine ping 8.8.8.8
+_docker service create alpine ping 8.8.8.8_
 <service-id> or <service-name>
 
-docker service ls
+_docker service ls_
 
-docker service ps <service-id>
+_docker service ps <service-id>_
 
-docker service update <service-id> --replicas 3
+_docker service update <service-id> --replicas 3_
 
-docker container ls
+_docker container ls_
 
-docker service rm <service-id>
+_docker service rm <service-id>_
 
 # Section 3: Creating a 3-node swarm
-docker swarm init --advertise-addr <ip-address>
+_docker swarm init --advertise-addr <ip-address>_
 
-docker node update --role manager <worker-node-id>
+_docker node update --role manager <worker-node-id>_
 
-docker node ls
+_docker node ls_
 
-docker swarm join-token manager
+_docker swarm join-token manager_
 
-docker service create --replicas 3 alpine ping 8.8.8.8
+_docker service create --replicas 3 alpine ping 8.8.8.8_
 
-docker node ls
+_docker node ls_
 
-docker node ps
+_docker node ps_
 
-docker node ps <node-id>
+_docker node ps <node-id>_
 
-docker service ps <service-id>
+_docker service ps <service-id>_
 
 # Section 4: Networking and route meshing
 The overlay driver (--driver overlay)creates a swarm bridge 
@@ -102,12 +102,12 @@ Stacks manage all objects including the overlay network per stack
 The docker-compose cli is not required in swarm
 A Stack can only do one swarm
 
-docker stack deploy
-docker stack deploy -c <compose-file> <stack-name>
-docker stack ls
-docker stack ps <stack-name>
-docker stack services <service-name>
-docker network ls
+_docker stack deploy_
+_docker stack deploy -c <compose-file> <stack-name>_
+_docker stack ls_
+_docker stack ps <stack-name>_
+_docker stack services <service-name>_
+_docker network ls_
 
 # Section 4:14 Secrets
 secrets can orinate for a file or the command line the - denotes stdin
@@ -121,8 +121,8 @@ file system but in a ram file system.
 docker secret create psl_user <secret-file>
 echo "aDBPassWord" | docker secret create psql_password -
 
-docker secret ls
-docker secret inspect psql_user
+_docker secret ls_
+_docker secret inspect psql_user_
 
 the --secret maps the secret to the service
 xxxx_xxxx_FILE= is a docker standard for consuming environment variables via
