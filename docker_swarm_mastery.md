@@ -1,17 +1,18 @@
+# Section 1
+The following command allows us to check if docker swarm has been activate 
+_docker info_
 
-docker info
-
-# Creating the swarm
+# Creating a docker swarm
 
 _docker swarm init_
 
-# add a worker node
+add a worker node
 _docker swarm join --token SWMTKN-1-xxxxxx --\<master-ip-addr>:2377_
 
-# add a master node
+add a master node
 _docker node update --role manager \<node-id>_
 
-# add a manager node
+add a manager node
 _docker swarm join-token manager_
 
 _docker swarm join --token SWMTKN-1-xxxxxx --\<master-ip-addr>:2377_
@@ -21,7 +22,7 @@ _docker node ls_
 
 _docker service --help_
 
-_docker service create alpine ping 8.8.8.8_
+_docker service create alpine ping 8.8.8.8
 \<service-id> or \<service-name>
 
 _docker service ls_
