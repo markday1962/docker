@@ -22,7 +22,7 @@ _docker node ls_
 
 _docker service --help_
 
-_docker service create alpine ping 8.8.8.8
+_docker service create alpine ping 8.8.8.8_
 \<service-id> or \<service-name>
 
 _docker service ls_
