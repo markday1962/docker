@@ -236,7 +236,7 @@ I am just going to concentrate on healthchecks in Compose files
 Example of health checking an elasticsearch container
 
 _healthcheck:
-  test: ["CMD", "curl", "-f", "http://marvin-patfams-master-1:9200/_cluster/health"]
+  test: ["CMD", "curl", "-f", "http://marvin-patfams-master-1:9200/cluster/health"]
   interval: 1m30s
   timeout: 10s
   retries: 3
