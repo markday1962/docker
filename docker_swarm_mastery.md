@@ -1,21 +1,24 @@
-# Section 1
-The following command allows us to check if docker swarm has been activate 
-_docker info_
 
-# Creating a docker swarm
+docker info
+
+# Creating the swarm
 
 _docker swarm init_
 
-add a worker node
-_docker swarm join --token SWMTKN-1-xxxxxx --\<master-ip-addr>:2377_
+# add a worker node
+_docker swarm join \ 
+	--token SWMTKN-1-xxxxxx \
+	--\<master-ip-addr>:2377_
 
-add a master node
+# add a master node
 _docker node update --role manager \<node-id>_
 
-add a manager node
+# add a manager node
 _docker swarm join-token manager_
 
-_docker swarm join --token SWMTKN-1-xxxxxx --\<master-ip-addr>:2377_
+_docker swarm join \ 
+	--token SWMTKN-1-xxxxxx \
+	--\<master-ip-addr>:2377_
 
 # Section 2: Creating a single node cluster
 _docker node ls_
@@ -227,9 +230,16 @@ _docker service update --force web_
 
 _docker service rm web_
 
+# Section 5:20 Healthchecks in Dockerfiles #
+I am just going to concentrate on healthchecks in Compose files
 
-
-
+Example of health checking an elasticsearch container
+_healthcheck:
+  test: ["CMD", "curl", "-f", "http://marvin-patfams-master-1:9200/_cluster/health"]
+  interval: 1m30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s_
 
 
 
