@@ -9,8 +9,7 @@ _docker swarm init_
 
 * add a worker node
 
-_docker swarm join \ 
-	--token SWMTKN-1-xxxxxx \
+_docker swarm join --token SWMTKN-1-xxxxxx \
 	--\<master-ip-addr>:2377_
 
 * add a master node
@@ -303,6 +302,7 @@ _docker service create --name dmz-nginx
 
 ## Exercise cleanup commands
 _docker service rm app1 dmz-nginx_
+
 _docker node update --label-rm dmz node2_ 
 
 ## Service constraints in a Stack File
