@@ -8,15 +8,15 @@ docker info
 #### Initialize the swarm
 _docker swarm init_
 
-#### add a worker node
+#### adding a worker node to the swarm
 
 _docker swarm join --token SWMTKN-1-xxxxxx --\<master-ip-addr>:2377_
 
-#### add a master node
+#### updating a node to a master node
 
 _docker node update --role manager \<node-id>_
 
-##### add a manager node
+#### adding a manager node to the swarm
 
 _docker swarm join-token manager_
 
@@ -84,7 +84,7 @@ _docker service create --name drupal --network mydrupal \
 _watch docker service ls_
 _docker service ps drupal_
 
-## Section 4:11 The Routing mesh
+## Section 4:11: The Routing mesh
 Is a stateless load balancer
 Is a layer 3 load balancer (tcp)
 Docker enterprise edition comes with a layer 4 web proxy
@@ -95,13 +95,13 @@ There are two ways this works
 1: Container-to-Container in a overlay network using Virtual IP addresses
 2: External traffic incoming to published ports, all the nodes are listening.
 
-## Section 4.12
+## Section 4.12: Exercise
 
 _docker service create --name search --replicas 3 -p 9200:9200 eleasticsearch:2_
 _docker service ps search_
 _curl localhost:9200_
 
-## Section 4:13 Stacks
+## Section 4:13: Docker Swarm Stacks
 Stacks accept Compose files as a declarative defining for services, 
 networks and volumes 
 being used in the swarm.
@@ -116,7 +116,7 @@ _docker stack ps \<stack-name>_
 _docker stack services \<service-name>_
 _docker network ls_
 
-## Section 4:14 Secrets
+## Section 4:14: Secrets
 secrets can orinate for a file or the command line the - denotes stdin
 both have security flaws as a file could be accessed later (shred) with
 echo the command and password will appear in the root bash history
@@ -178,7 +178,7 @@ secrets:
 
 # Section 5
 
-## Section 5.1 Full App Lifecycle with Docker Compose
+## Section 5.1: Full App Lifecycle with Docker Compose
 The standard docker-compose.yml file sets the defaults that are the same
 across all environments.
 the docker-compose.override.yml is automatically brought in when a docker-compose up is 
@@ -195,7 +195,7 @@ to a single compose file, has a bug when try merging secrets.
 
 _docker-compose -f docker-compose.yml -f docker-compose.prod.yml config > output.yml_
 
-## Section 5:18 Service updates
+## Section 5.18: Service updates
 Provide rolling replacements of tasks/containers
 Limit task downtime
 Will replace containers for most changes
@@ -222,7 +222,7 @@ Same command just edit the docker-compose file, then
 
 _docker stack deply -c file.yml \<stackname>_
 
-## Section 5:19 Service updates on the fly
+## Section 5.19: Service updates on the fly
 _docker service create -p 8088:80 --name web nginx:1.13.7_
 _docker service ls_
 
@@ -239,7 +239,7 @@ _docker service update --force web_
 
 _docker service rm web_
 
-## Section 5:20 Healthchecks in Dockerfiles
+## Section 5.20: Healthchecks in Dockerfiles
 I am just going to concentrate on healthchecks in Compose files
 
 Example of health checking an elasticsearch container
@@ -253,7 +253,7 @@ _healthcheck:
 
 # Section 6
 
-## Section 6:21 Controlling Container (Task) Placement in Swarm
+## Section 6.21 Controlling Container (Task) Placement in Swarm
 
 Create a swarm cluster of 1 manager and two workers and create a visulazer
 
@@ -283,7 +283,7 @@ _docker node update --label-add=dmz=true node2_
 
 _docker service create --constraint=node.labels.dmz==true nginx_
 
-## Section 6.22 Exercises
+## Section 6.22: Exercises
 creating a constraint form a built in label
 _docker service create --name app1 --constraint node.role==worker nginx_
 
@@ -325,7 +325,7 @@ services:
 * node.platform.arch (x86_64|arm64|386|etc)
 * node.labels (empty by default)
 
-## Section 6.23 Service Modes
+## Section 6.23: Service Modes
 
 
 
