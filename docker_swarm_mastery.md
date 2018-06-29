@@ -28,6 +28,7 @@ _docker node ls_
 _docker service --help_
 
 _docker service create alpine ping 8.8.8.8_
+
 \<service-id> or \<service-name>
 
 _docker service ls_
@@ -73,18 +74,16 @@ _docker network create --driver overlay \<network-name>_
 _docker network ls_
 
 _docker network create --driver overlay mydrupal
-_docker service create --name psql --network mydrupal -e \
-	POSTGRES_PASSWORD=mypass postgress_
+_docker service create --name psql --network mydrupal -e POSTGRES_PASSWORD=mypass postgress_
 _docker service ls_
 _docker service ps psql_
 _docker container logs psql_
 
-_docker service create --name drupal --network mydrupal \
-	-p 80:80 drupal_
+_docker service create --name drupal --network mydrupal -p 80:80 drupal_
 _watch docker service ls_
 _docker service ps drupal_
 
-## Section 4:11: The Routing mesh
+## Section 4.11: The Routing mesh
 Is a stateless load balancer
 Is a layer 3 load balancer (tcp)
 Docker enterprise edition comes with a layer 4 web proxy
@@ -96,12 +95,11 @@ There are two ways this works
 2: External traffic incoming to published ports, all the nodes are listening.
 
 ## Section 4.12: Exercise
-
 _docker service create --name search --replicas 3 -p 9200:9200 eleasticsearch:2_
 _docker service ps search_
 _curl localhost:9200_
 
-## Section 4:13: Docker Swarm Stacks
+## Section 4.13: Docker Swarm Stacks
 Stacks accept Compose files as a declarative defining for services, 
 networks and volumes 
 being used in the swarm.
@@ -116,7 +114,7 @@ _docker stack ps \<stack-name>_
 _docker stack services \<service-name>_
 _docker network ls_
 
-## Section 4:14: Secrets
+## Section 4.14: Secrets
 secrets can orinate for a file or the command line the - denotes stdin
 both have security flaws as a file could be accessed later (shred) with
 echo the command and password will appear in the root bash history
@@ -300,13 +298,12 @@ _docker service create --name dmz-nginx
 	--constraint node.labels.dmz==true
 		--replicas 2 nginx_
 
-## Exercise cleanup commands
+#### Exercise cleanup commands
 _docker service rm app1 dmz-nginx_
 
 _docker node update --label-rm dmz node2_ 
 
 ## Service constraints in a Stack File
-
 _version: "3.1"
 services:
 	proxy:
@@ -326,6 +323,114 @@ services:
 * node.labels (empty by default)
 
 ## Section 6.23: Service Modes
+* _docker service ls_ will show the service mode
+* Replicated mode is the default service mode
+* Global = one task is assigned to every node in the swarm, it guarentees a task on each node
+* The Global service mode is set at the server create time only, to change the service must be removed.
+* The Global service mode is good for host agents (security tools, monitoring tools, backup, etc)
+* 1.13+ Global mode can be conbined with Constraints
+* If a node is added to the swarm the global task is automatically added to the node.
+
+## Service mode examples
+#### Place one task on each node in the swarm in this case nginx
+_docker service create --mode=global --name proxy nginx_
+
+#### Place one task on each worker in the swarm using a built in label constraint
+_docker service create --mode=global --constraint=node.role==worker --name proxynginx_
+
+#### Exercise cleanup commands
+_docker service rm proxy_
+
+## Global mode in a Stack File
+_version: "3.1"
+services:
+	proxy:
+		image: nginx
+		deploy:
+			mode: global_
+
+## Section 6.24: Placement Preferences
+* Placement preferences are a soft requirement, so if they are not matched the task will still get run.
+* To use placement preferences you must have labels on your nodes
+* Spreads tasks among all values of the label
+* Good for ensuring disribution across AWS availability zones, datacentres, subnets, etc
+* works on service create and update
+* Can add multiple preferences for multi-layered placement control
+* wont move a service task if a nodes labels are changed
+* Use with constraints if lables are not on all nodes, a missing label is considerd a null value and the task is deployed to the node
+
+## Placement Preference Examples
+#### Label all your AWS nodes with azone label
+_docker node update --label-add=azone=eu-west-1a node1_
+_docker node update --label-add=azone=eu-west-1b node2_
+_docker node update --label-add=azone=eu-west-1c node3_
+
+#### use a service create command to make sure your service is deployed to all availability zones
+_docker service create --name proxy --placement-pref spread=node.labels.azone --replicas 3 nginx_
+
+#### Use service update to add and remove placement preferences
+_docker service update proxy --placement-pref-add spread=node.labels.subnet_
+_docker service update proxy --placement-pref-rm spread=node.labels.subnet_
+
+#### Multi-layer preferences
+_http://docs.docker.com/engine/swarm/#placement-preferences_
+
+_docker service create --replicas 9 --name redis_2 --placement-pref 'spread=node.labels.datacenter --placement-pref 'spread=node.labels.rack' redis:3.0.6_
+
+## Section 6.25 Node Availability
+* Nodes can have one of three admin-controlled states
+* Only affects if existing or new containers can run on the node
+1. active: runs existing tasks and is available for new tasks
+2. pause: runs existing tasks but is not available for new tasks (good for trouble shooting)
+3. drain: stops the tasks running on a node and moves them to other nodes and is not available for new tasks (good for maintenance)
+* Remember this affects service updates and recovering tasks
+* Do not use drain mode on managers to prevent them having other tasks deployed to them, use labels to control manager tasks
+
+## Node availability examples
+#### preventing a node from starting new containers but existing containers keep running
+_docker node update --availability pause node2_
+
+#### stopping containers on a node and assigned thier tasks to other nodes, by gracefully stopping the running containers
+_docker node update --availability drain node2_
+
+## Section 6.26 Service Resource Requirements
+* reservations are a promise about what you will give to a service
+* Set at the service create/update but are controlled per-container
+* Set for CPU and memory, reserving and limiting
+* Maximum given to a service
+1. --limit-cpu .5 (half a cpu)
+2. --limit-memory 256M (use with caution as the service can be terminated if the mem limit is reached.
+* Minimum free needed to schedule a container
+1. --reserve-cpu .5
+2. --reserve-memory 256M
+
+## Resource Requirements examples
+#### reserve cpu and memory for a service
+_docker service create --reserve-memory 800M --reserve-cpu 1 --name db mysql_
+
+#### Limiting the cpu and memory for a service
+_docker service create --limit-memory 150M --limit-cpu .25 -name proxy nginx_
+
+#### Update the cpu and memory for a service
+_docker service update --limit-memory 250M --limit-cpu .5 proxy_
+
+#### To remove a reservation completely the resource is set to 0
+_docker service update --limit-memory 0 --limit-cpu 0 proxy_
+
+#### Resource requirements in a stack file
+_version: "3.1"
+services:
+	proxy:
+		image: nginx
+		deploy:
+			resources:
+				limits:
+					cpu: '1'
+					memory: 1G
+				reservations:
+					cpu: '0.5'
+					memory: 500M_
+
 
 
 
