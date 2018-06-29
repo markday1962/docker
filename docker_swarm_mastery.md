@@ -16,9 +16,7 @@ _docker node update --role manager \<node-id>_
 # add a manager node
 _docker swarm join-token manager_
 
-_docker swarm join \ 
-	--token SWMTKN-1-xxxxxx \
-	--\<master-ip-addr>:2377_
+_docker swarm join --token SWMTKN-1-xxxxxx <master-ip-addr>:2377_
 
 # Section 2: Creating a single node cluster
 _docker node ls_
@@ -133,12 +131,12 @@ _docker service create --name psql --secret psql_user --secret psql_password \
 	-e POSTGRES_PASSWORD_FILE=/run/secrets/psql_password \
 	-e POSTGRES_USER_FILE=/run/secrets/psql_user postgres_
 
-# Secrets with stacks
+## Secrets with stacks
 running secrets in a docker-compose file the file is to be at least version 3.1
 
 docker service create --name search --replicas 3 -p 9200:9200 elasticsearch:2
 
-# Compose file snippet with secrets (short-form)
+## Compose file snippet with secrets (short-form)
 version: "3.1"
 
 services:
@@ -165,7 +163,7 @@ when a stack is removed the secrets are also removed
 _docker stack rm mydb_
 _docker secrets ls_
 
-# defining external secrets
+## defining external secrets
 secrets:
 	psql_password:
 		external: true
@@ -179,7 +177,7 @@ other docker-compose files can be created for prod and test: docker-compose.prod
 docker-compose.test.yml and these are accessed using the -f specifying a custom compose
 file.
 
-# CI example
+## CI example
 _docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d_
 
 Prod merges both docker-compose.yml -f docker-compose.prod.yml files and merges them
@@ -199,7 +197,7 @@ _docker service scale web=4_
 _docker service rollback web_
 A stack deploy to a pre-existing stack, issues a service update
 
-# Swarm Update Examples
+## Swarm Update Examples
 Update the image being used to a newer version
 _docker service update --image myapp:1.2.1 \<service-name>_
 
@@ -224,27 +222,97 @@ _docker service update --image nginx:1.13.6 web_
 
 _docker service update --publish-rm 8088 --publish-add 9090:80_
 
-Because docker does not support rebalancing, it can be forced with the following commnd, which rolls though a completly replaces the tasks on the least used node of the cluster.
+Because docker does not support rebalancing, it can be forced with the following commnd, which rolls though a 
+and completly replaces the tasks on the least used node of the cluster.
 
 _docker service update --force web_
 
 _docker service rm web_
 
-# Section 5:20 Healthchecks in Dockerfiles #
+# Section 5:20 Healthchecks in Dockerfiles
 I am just going to concentrate on healthchecks in Compose files
 
 Example of health checking an elasticsearch container
 
 _healthcheck:
-  test: ["CMD", "curl", "-f", "http://marvin-patfams-master-1:9200/__cluster_/health"]
+  test: ["CMD", "curl", "-f", "http://marvin-patfams-master-1:9200/cluster/health"]
   interval: 1m30s
   timeout: 10s
   retries: 3
   start_period: 40s_
 
+# Section 6:21 Controlling Container (Task) Placement in Swarm
 
 
+Create a swarm cluster of 1 manager and two workers and create a visulazer
 
+## Controlling Container Placement
+By default a Swarm Service spreads its tasks out over all nodes in the cluster, trying to 
+use the least-used node for a task.
+
+1. Node Labels plus Service Constraints (<key>=<value>)
+2. Service Modes (replicated|global)
+3. Placement Preferences (spread) (new in 17.04+)
+4. Node Availability (active|pause|drain)
+5. Resource Requirements (cpu|memory)
+
+## Service Constraints
+Service constraints use a simple key=value alogorithm that:
+
+1. Filter task placements based on built-in or custom labels
+2. Service constraints can be added at the creation time or added or removed at update time.
+3. Creates a hard requirement, so the placement will fail if the requirement is not matched.
+
+placement only on a manager (2 options for the same result)
+_docker service create --constraint=node.role==manager nginx_
+_docker service create --constraint=node.role!=worker nginx_
+
+adding a label to node2 for dmz=true, and use this to constrain to
+_docker node update --label-add=dmz=true node2_
+_docker service create --constraint=node.labels.dmz==true nginx_
+
+## Section 6.22 Exercises
+creating a constraint form a built in label
+_docker service create --name app1 --constraint node.role==worker nginx_
+
+adding and removing a constraint
+_docker service update
+	--constraint-rm node.role==worker
+		--constraint-add node.role==manager app1_
+
+adding a custom label to a node
+_docker node update --label-add dmz=true node2_
+
+adding a task to our newly lablled node
+_docker service create --name dmz-nginx
+	--constraint node.labels.dmz==true
+		--replicas 2 nginx_
+
+## Exercise cleanup commands
+_docker service rm app1 dmz-nginx_
+_docker node update --label-rm dmz node2_ 
+
+## Service constraints in a Stack File
+
+_version: "3.1"
+services:
+	proxy:
+		image: nginx
+		deploy:
+			placement:
+				constrants:
+					- node.labels.dmz == true_
+
+## Service Constraints: Documented Built-in labels
+* node.id (listed in docker ls)
+* node.hostname (listed in docker node ls)
+* node.ip
+* node.role (manager|worker)
+* node.platform.os (linux|windows|etc)
+* node.platform.arch (x86_64|arm64|386|etc)
+* node.labels (empty by default)
+
+## Section 6.23 Service Modes
 
 
 
