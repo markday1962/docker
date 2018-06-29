@@ -1,9 +1,13 @@
 
 
-# Resources
+# Section 1
 
+## Resources
+
+#### Checking if docker is installed and swarm has been initialised
 _docker info_
 
+#### Web UI
 _https://labs.play-with-docker.com/_
 
 # Section 2
@@ -34,7 +38,6 @@ _docker service --help_
 
 _docker service create alpine ping 8.8.8.8_
 
-\<service-id> or \
 
 _docker service ls_
 
@@ -428,7 +431,7 @@ _docker service update --limit-memory 250M --limit-cpu .5 proxy_
 _docker service update --limit-memory 0 --limit-cpu 0 proxy_
 
 #### Resource requirements in a stack file
-_version: "3.1"
+_version: "3.3"
 services:
 	proxy:
 		image: nginx
@@ -440,9 +443,98 @@ services:
 				reservations:
 					cpu: '0.5'
 					memory: 500M_
+
 # Section 7
 
 ## Section 7.28 Service Logs
+* The same as docker container logs, but aggregates all service tasks
+* It can return all the tasks in a service on everu node at once or just one task's logs
+* can be run from a manager node
+* good for trpouble shooting
+* has options for tailing logs
+* does not work if the --log-driver is used for sending logs off the server
+* usefull for small swarms
+
+## Service Logs Examples
+#### Return all logs for a service
+_docker service logs \<servicename>_
+
+#### Return all the logs for a single task
+_docker service logs \<taskid>_
+
+#### Return unformatted logs with no truncation
+_docker service logs --raw --no-trunc \<servicename>_
+
+#### Return the last 50 log entries and follow the logs comming in from the nodes
+_docker service logs --tail 50 --follow \<servicename>_
+
+## Section 7.29: Docker Events and Viewing Them In Swarm
+* Docker events show the actions taken by the docker engine, service update, container start,network create
+* Limited to holding the last 1000 events
+* No logs are stored on disk
+* Comes with two scopes
+1. local: on the node the event happens
+2. swarm: 
+* Not the same a dockerd or journald log
+* Not an error log
+
+## Docker Events Examples
+#### Follow future events, if run on a manger will show the swarm events
+_docker events_
+
+#### Return events from a date until now and future logs
+_docker events --since 2018-06-26_
+
+_docker events --since 2018-06-26T12:30:00_
+
+#### Return docker events from 30 minutes until now and future logs
+_docker events --since 30m_
+
+_docker events --since 2h10m_
+
+#### Return the last hours events and filtered by an event name
+_docker events --since 1h --filter event=start_
+
+#### Return the last hours events and filtered on swarm events related to networks
+_docker events --since 1h --filter scope=swarm --filter type=network_
+
+## Section 7.30: Swarm Configs
+* Map files/strings stored in Raft Database to any file path in a tasks
+* Ideal for mapping configs into a service e.g nginx config
+* Immutable
+* Only Removable once the service has been removed
+* Strings are stored in the Swarm Raft Log
+* Highly available as long as there is raft consensus
+* Not to be used for environment variables
+
+#### Create a new config from an nginx config, the command reads the nginx.conf and stores it in nginx01
+_docker config create nginx01 ./nginx.conf_
+
+#### Creating a service using the newly created config
+_docker service create --config-source=nginx01, target=/etc/nginx/conf.d/default.conf_
+
+#### Creating a new config as you cannot edit an existing one (two step process)
+_docker config create nginx02 ./nginx.conf_
+
+_docker service update --config-rm nginx01 --config-add source=nginx02,target=target=/etc/nginx/conf.d/default.conf_
+
+#### Swarm Configs in a Stack file
+_version: "3.3"
+services:
+	proxy:
+		image: nginx
+		configs:
+			- source: nginx-config
+				target=/etc/nginx/conf.d/default.conf
+	configs:
+		nginx-proxy:
+			file:./nginx.conf_
+
+
+
+
+
+
 
 
 
