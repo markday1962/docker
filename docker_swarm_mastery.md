@@ -1,12 +1,17 @@
 
-docker info
+
+# Resources
+
+_docker info_
+
+_https://labs.play-with-docker.com/_
 
 # Section 2
 
 ## Section 2.1: Creating the swarm
 
 #### Initialize the swarm
-_docker swarm init_
+_docker swarm init --advertise-addr <private-ip-addr>_
 
 #### adding a worker node to the swarm
 
@@ -29,17 +34,22 @@ _docker service --help_
 
 _docker service create alpine ping 8.8.8.8_
 
-\<service-id> or \<service-name>
+\<service-id> or \
 
 _docker service ls_
 
-_docker service ps \<service-id>_
+_docker service ps <service-name>_
 
 _docker service update \<service-id> --replicas 3_
 
 _docker container ls_
 
 _docker service rm \<service-id>_
+
+## Section 2.6 Swarm Visualizer
+The Swarm Visualizer is a sample app that is useful as a teaching aid. It gives us a web GUI to see our Swarm nodes and where services are running in the Swarm.  It talks to the Docker API securely through the "Linux socket" and auto-updates a web UI of what's happening.
+
+_docker service create --name=viz --publish=8080:8080/tcp --constraint=node.role==manager --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock bretfisher/visualizer_
 
 # Section 3
 
@@ -73,7 +83,7 @@ _docker network create --driver overlay \<network-name>_
 
 _docker network ls_
 
-_docker network create --driver overlay mydrupal
+_docker network create --driver overlay mydrupal_
 _docker service create --name psql --network mydrupal -e POSTGRES_PASSWORD=mypass postgress_
 _docker service ls_
 _docker service ps psql_
@@ -404,7 +414,7 @@ _docker node update --availability drain node2_
 1. --reserve-cpu .5
 2. --reserve-memory 256M
 
-## Resource Requirements examples
+## Resource Requirements Examples
 #### reserve cpu and memory for a service
 _docker service create --reserve-memory 800M --reserve-cpu 1 --name db mysql_
 
@@ -430,7 +440,9 @@ services:
 				reservations:
 					cpu: '0.5'
 					memory: 500M_
+# Section 7
 
+## Section 7.28 Service Logs
 
 
 
