@@ -87,9 +87,13 @@ _docker network create --driver overlay \<network-name>_
 _docker network ls_
 
 _docker network create --driver overlay mydrupal_
+
 _docker service create --name psql --network mydrupal -e POSTGRES_PASSWORD=mypass postgress_
+
 _docker service ls_
+
 _docker service ps psql_
+
 _docker container logs psql_
 
 _docker service create --name drupal --network mydrupal -p 80:80 drupal_
@@ -109,7 +113,9 @@ There are two ways this works
 
 ## Section 4.12: Exercise
 _docker service create --name search --replicas 3 -p 9200:9200 eleasticsearch:2_
+
 _docker service ps search_
+
 _curl localhost:9200_
 
 ## Section 4.13: Docker Swarm Stacks
@@ -121,10 +127,15 @@ The docker-compose cli is not required in swarm
 A Stack can only do one swarm
 
 _docker stack deploy_
+
 _docker stack deploy -c \<compose-file> \<stack-name>_
+
 _docker stack ls_
+
 _docker stack ps \<stack-name>_
+
 _docker stack services \<service-name>_
+
 _docker network ls_
 
 ## Section 4.14: Secrets
@@ -137,9 +148,11 @@ can be accessed at /run/secrets/\<secret> this is not stored on the file
 file system but in a ram file system.
 
 _docker secret create psl_user \<secret-file>_
+
 _echo "aDBPassWord" | docker secret create psql_password -_
 
 _docker secret ls_
+
 _docker secret inspect psql_user_
 
 the --secret maps the secret to the service
@@ -175,11 +188,13 @@ secrets:
 		file: ./psql_password.txt
 
 _docker stack deploy -c docker-compose.yml mydb_
+
 _docker secret ls_
 
 when a stack is removed the secrets are also removed
 
 _docker stack rm mydb_
+
 _docker secrets ls_
 
 ## defining external secrets
