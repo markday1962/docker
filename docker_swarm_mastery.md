@@ -229,18 +229,24 @@ Has many cli options (76) to control the update
 Create options will usually change, adding -add or -rm to them
 Includes rollback and healthcheck options
 Has scale and rollback subcommands
+
 _docker service scale web=4_
+
 _docker service rollback web_
+
 A stack deploy to a pre-existing stack, issues a service update
 
 ## Swarm Update Examples
 Update the image being used to a newer version
+
 _docker service update --image myapp:1.2.1 \<service-name>_
 
 Adding an environment variable and removing a port
+
 _docker service update --env-add NODE_ENV=production --publish-rm 8080_
 
 Scale up or down replicates of multiple services
+
 _docker service scale web=8 api=6_
 
 Swarm updates in a stack file
@@ -250,6 +256,7 @@ _docker stack deply -c file.yml \<stackname>_
 
 ## Section 5.19: Service updates on the fly
 _docker service create -p 8088:80 --name web nginx:1.13.7_
+
 _docker service ls_
 
 _docker service scale web=5_
@@ -301,27 +308,34 @@ Service constraints use a simple key=value alogorithm that:
 3. Creates a hard requirement, so the placement will fail if the requirement is not matched.
 
 placement only on a manager (2 options for the same result)
+
 _docker service create --constraint=node.role==manager nginx_
+
 _docker service create --constraint=node.role!=worker nginx_
 
 adding a label to node2 for dmz=true, and use this to constrain to
+
 _docker node update --label-add=dmz=true node2_
 
 _docker service create --constraint=node.labels.dmz==true nginx_
 
 ## Section 6.22: Exercises
 creating a constraint form a built in label
+
 _docker service create --name app1 --constraint node.role==worker nginx_
 
 adding and removing a constraint
+
 _docker service update
 	--constraint-rm node.role==worker
 		--constraint-add node.role==manager app1_
 
 adding a custom label to a node
+
 _docker node update --label-add dmz=true node2_
 
 adding a task to our newly lablled node
+
 _docker service create --name dmz-nginx
 	--constraint node.labels.dmz==true
 		--replicas 2 nginx_
@@ -390,7 +404,9 @@ services:
 ## Placement Preference Examples
 #### Label all your AWS nodes with azone label
 _docker node update --label-add=azone=eu-west-1a node1_
+
 _docker node update --label-add=azone=eu-west-1b node2_
+
 _docker node update --label-add=azone=eu-west-1c node3_
 
 #### use a service create command to make sure your service is deployed to all availability zones
@@ -398,6 +414,7 @@ _docker service create --name proxy --placement-pref spread=node.labels.azone --
 
 #### Use service update to add and remove placement preferences
 _docker service update proxy --placement-pref-add spread=node.labels.subnet_
+
 _docker service update proxy --placement-pref-rm spread=node.labels.subnet_
 
 #### Multi-layer preferences
