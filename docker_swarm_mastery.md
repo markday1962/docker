@@ -487,7 +487,7 @@ services:
 * does not work if the --log-driver is used for sending logs off the server
 * usefull for small swarms
 
-## Service Logs Examples
+## Service Logs Examples 
 #### Return all logs for a service
 _docker service logs \<servicename>_
 
