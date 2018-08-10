@@ -1,0 +1,54 @@
+version: '3'
+services:
+    apache:
+        image:  webdevops/php-apache-dev
+        ports:
+            - 8001:80
+        networks:
+            - marvin_backend
+        deploy:
+            mode: global
+            restart_policy:
+                condition: on-failure
+            placement:
+                constraints: [node.labels.type == apache ]
+    nginx:
+        image: fsoppelsa/swarm-nginx
+        ports:
+            - 8002:80
+        networks:
+            - marvin_backend
+        deploy:
+            mode: global
+            restart_policy:
+                condition: on-failure
+            placement:
+                constraints: [node.labels.type == nginx ]
+    spark_master:
+        image: gcr.io/google-containers/spark-master
+        ports:
+            - 8003:8080
+            - 7077:7077
+            - 6066:6066
+        networks: 
+            - marvin_backend
+        deploy:
+            mode: global
+            restart_policy:
+                condition: on-failure
+            placement:
+                constraints: [node.labels.type == spark_master ]
+    spark_worker:
+        image: gcr.io/google-containers/spark-worker
+        ports:
+            - 8004:8081
+        networks: 
+            - marvin_backend
+        deploy:
+            mode: global
+            restart_policy:
+                condition: on-failure
+            placement:
+                constraints: [node.labels.type == spark_worker ]
+networks:
+    marvin_backend:
