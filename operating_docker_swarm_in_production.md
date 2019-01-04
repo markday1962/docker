@@ -36,7 +36,7 @@ A service Config is updated by removing the old one and adding the new one to th
 ### Inspecting a Config
 - docker config inspect nginx-20180104
 
-## Removing a Config
+### Removing a Config
 - docker config remove nginx-20180104
 
 If the Config is being used when trying to remove a Config and InvalidArgument error is raised detailing 
@@ -44,17 +44,17 @@ which service is using the Config.
 
 # Swarm Configs in a Stack file
 Below is a sample stack file that contains Config references
-version: "3.3" # or higher
-services:
- web:
-  image: nginx
-  configs:
-   - source: nginx-proxy
-     target: /etc/nginx/conf.d/default.conf
+>version: "3.3" # or higher
+>services:
+> web:
+>  image: nginx
+>  configs:
+>   - source: nginx-proxy
+>     target: /etc/nginx/conf.d/default.conf
 
-configs:
- nginx-proxy:
-  file:./nginx-app.conf
+>configs:
+> nginx-proxy:
+>  file:./nginx-app.conf
 
 
 
