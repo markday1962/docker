@@ -15,35 +15,29 @@ Swarm congigs are not to be used to:
 - Store private keys, Swarm secrets should be used.
 - To replace environment variables
 
-# Swarm Config examples
-
-### Create a new Config for an nginx config
+### Creating a config
 ```bash
 $ docker config create nginx-20180104 ./nginx-app.conf
 ```
 
-### Create a Service with a Config
+### Create a Service with a config
 ```bash
 $ docker service create --config source=nginx-20180104, target=/etc/nginx/conf.d/default.conf -p 9000:80 --network frontend -name proxy nginx
-```
-
-### Creating a new Config to replace old
-```bash
-$ docker config create nginx-20180104 ./nginx-app.conf
 ```
 
 ### Updating a Service Config
 A service Config is updated by removing the old one and adding the new one to the service
 ```bash
-$ docker service update --config-rm nginx-20180104 --config-add source=nginx-20180105,target=/etc/nginx/conf.d/default.conf
+$ docker config create nginx-20190111 ./nginx-app.conf
+$ docker service update --config-rm nginx-20180104 --config-add source=nginx-20180111,target=/etc/nginx/conf.d/default.conf
 ```
 
-### Checking a Config
+### Checking a config
 ```bash
 $ docker config ls
 ```
 
-### Inspecting a Config
+### Inspecting a config
 ```bash
 $ docker config inspect nginx-20180104
 ```
@@ -56,7 +50,7 @@ $ docker config remove nginx-20180104
 If the Config is being used when trying to remove a Config and InvalidArgument error is raised detailing 
 which service is using the Config.
 
-# Swarm Configs in a Stack file
+### Configs in a Stack file
 
 The stack file snippet shows a config being defined and being used by the app1 service.
 
