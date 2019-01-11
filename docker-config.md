@@ -58,10 +58,10 @@ The stack file snippet shows a config being defined and being used by the app1 s
 version: "3.3" # or higher
 services:
 	app1:
-	image: nginx
-	configs:
-	- source: nginx-proxy
-		target: /etc/nginx/conf.d/default.conf
+		image: nginx
+		configs:
+			- source: nginx-proxy
+				target: /etc/nginx/conf.d/default.conf
 
 configs:
 	nginx-proxy:

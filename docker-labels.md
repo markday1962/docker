@@ -26,7 +26,7 @@ $ docker node update --label-add dmz=true swarm-worker02
 
 ### Assigning a service based on a label
 
-Once the node is labled a service can then be deployed using the node lable as a constraint.
+Once the node is labeled a service can then be deployed using the node label as a constraint.
 
 ```bash
 $ docker service create --name dmz-nginx --constraint node.labels.dmz==true --replicas 2 nginx
@@ -53,4 +53,16 @@ $ docker node inspect
         "Architecture": "x86_64",
         "OS": "linux"
 },
+```
+
+### Service constraints in Stack files
+```bash
+version: "3.1" # or higher
+services:
+	dmz-nginz:
+		image: nginx
+		deploy:
+			placement:
+				constraints:
+					- node.labels.dmz == true
 ```
