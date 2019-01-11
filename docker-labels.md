@@ -11,9 +11,10 @@ $ docker service create --name app1 --constraint node.role==worker nginx
 If we wish to move a service to a different role, the service constraint must first be removed and then added.
 
 ```bash
-docker service update --constraint-rm node.role==worker --constraint-add node.role==manager app1
+$ docker service update --constraint-rm node.role==worker --constraint-add node.role==manager app1
 ```
 
+The service will then be removed from the master node and assigned to the worker node.
 
 ### Adding a label to a node
 
