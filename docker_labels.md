@@ -1,4 +1,5 @@
 # Docker labelling
+Docker labels can be used to control where tasks are run in the swarm and they can be used to prevent tasks being run on manager nodes.
 
 ### Assigning a service to a node based on is role
 
@@ -16,12 +17,16 @@ $ docker service update --constraint-rm node.role==worker --constraint-add node.
 
 The service will then be removed from the master node and assigned to the worker node.
 
-### Adding a label to a node
+### Adding and removing a label to a node
 
 We may wish to assign a service to a specific node, through the use off node labels.
 
 ```bash
 $ docker node update --label-add dmz=true swarm-worker02
+```
+
+```bash
+$ docker node update --label-rm dmz swarm-worker02
 ```
 
 ### Assigning a service based on a label
@@ -66,3 +71,15 @@ services:
 				constraints:
 					- node.labels.dmz == true
 ```
+
+### Service constraints built in labels
+
+Docker provides a number of built in labels that can be used for constraints, these include:
+
+- node.id
+- node.hostname
+- node.ip
+- node.role (manager|worker)
+- node.platform.os (linux|windows|etc)
+- node.platform.arch (x86_64|arm64|386|etc)
+- node.labels (empty by default)
