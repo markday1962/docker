@@ -11,25 +11,25 @@ file and provide the following.
 - High Availability, once a config/string is saved to the Raft log as long as there is concensus
 there is instant High Availability.
 
-Swarm congigs are not to be used to:
+Swarm configs are not to be used to:
 - Store private keys, Swarm secrets should be used.
 - To replace environment variables
 
 ### Creating a config
 ```bash
-$ docker config create nginx-20180104 ./nginx-app.conf
+$ docker config create nginx-app-20180111 ./nginx-app.conf
 ```
 
 ### Create a Service with a config
 ```bash
-$ docker service create --config source=nginx-20180104, target=/etc/nginx/conf.d/default.conf -p 9000:80 --network frontend -name proxy nginx
+$ docker service create --name app1 --config source=nginx-app-20180111,target=/etc/nginx/conf.d/default.conf nginx
 ```
 
 ### Updating a Service Config
 A service Config is updated by removing the old one and adding the new one to the service
 ```bash
 $ docker config create nginx-20190111 ./nginx-app.conf
-$ docker service update --config-rm nginx-20180104 --config-add source=nginx-20180111,target=/etc/nginx/conf.d/default.conf
+$ docker service update --config-rm nginx-app-20180111 --config-add source=nginx-nginx-app-20180112,target=/etc/nginx/conf.d/default.conf
 ```
 
 ### Checking a config
@@ -39,12 +39,12 @@ $ docker config ls
 
 ### Inspecting a config
 ```bash
-$ docker config inspect nginx-20180104
+$ docker config inspect nginx-app-20180111
 ```
 
 ### Removing a Config
 ```bash
-$ docker config remove nginx-20180104
+$ docker config remove nginx-app-20180111
 ```
 
 If the Config is being used when trying to remove a Config and InvalidArgument error is raised detailing 
