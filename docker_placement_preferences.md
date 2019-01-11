@@ -29,6 +29,20 @@ $ docker service update --placement-pref-add spread=node.labels.subnet
 $ docker service update --placement-pref-rm spread=node.labels.subnet
 ```
 
+### Stack file
+```bash
+version: '3.3'
+services:
+  app1:
+    image: nginx
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+        preferences:
+          - spread: node.labels.azone
+```
+
 ### Multi-layer preferences
 
 The following link provides a good example off multi layer placement prefences
