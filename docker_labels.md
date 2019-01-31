@@ -83,3 +83,16 @@ Docker provides a number of built in labels that can be used for constraints, th
 - node.platform.os (linux|windows|etc)
 - node.platform.arch (x86_64|arm64|386|etc)
 - node.labels (empty by default)
+
+### Docker daemon labels
+Labels can be added to the docker daemon which make it easier to deploy applications with autoscaling
+Create a file ```/etc/docker/docker``` with the following content.
+```
+{
+    "labels": ["role=worker"]
+}
+```
+Restart docker
+```
+sudo systemctl restart docker
+```
