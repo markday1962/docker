@@ -86,13 +86,24 @@ Docker provides a number of built in labels that can be used for constraints, th
 
 ### Docker daemon labels
 Labels can be added to the docker daemon which make it easier to deploy applications with autoscaling
-Create a file ```/etc/docker/docker``` with the following content.
+Create a file ```/etc/docker/daemon.json``` with the following content.
 ```
 {
-    "labels": ["role=worker"]
+    "labels": ["os=ubuntu"]
 }
 ```
 Restart docker
 ```
-sudo systemctl restart docker
+$ sudo systemctl restart docker
+```
+Inspect the node to confirm the label
+```
+$ docker node inspect <node-id"
+```
+```
+"Engine": {
+   "EngineVersion": "17.05.0-ce",
+   "Labels": {
+       "os": "ubuntu"
+       },
 ```
