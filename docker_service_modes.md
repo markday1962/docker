@@ -62,14 +62,14 @@ ID                  NAME                             IMAGE               NODE   
 fg64kkjtvzbs        app1.jcidnjf630igekxr6ts7d5g78   nginx:latest        swarm-worker01      Running                      
 wa6uss1bhna1        app1.vq77qku219urlh5ufxl4qhroj   nginx:latest        swarm-worker03      Running 
 ```
-For completeness an example using a engine label os==ubuntu, where worker1 and manager have the engine label applied.
+For completeness an example using a engine label os==ubuntu, where swarm-worker01 and swarm-master have the engine label applied.
 ```
 docker service create --name app1 --constraint engine.labels.os==ubuntu --mode=global nginx
 ```
 ```
 ID                  NAME                             IMAGE               NODE                DESIRED STATE
-i2d09n3y823o        app1.uuoti8hlprvp3lq5hd20q5k7c   nginx:latest        worker1             Running                     
-bp2bkyqhwpu7        app1.15sfrjfjk41jjv447npg1e9a8   nginx:latest        manager             Running 
+i2d09n3y823o        app1.uuoti8hlprvp3lq5hd20q5k7c   nginx:latest        swarm-worker01      Running                     
+bp2bkyqhwpu7        app1.15sfrjfjk41jjv447npg1e9a8   nginx:latest        swarm-master        Running 
 ```
 
 ### Service Mode in a Stack File
