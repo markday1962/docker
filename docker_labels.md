@@ -107,3 +107,7 @@ $ docker node inspect <node-id"
        "os": "ubuntu"
        },
 ```
+To assign a service to an engin label
+```
+$ docker service create --name app1 --constraint engine.labels.os==ubuntu --replicas 1 nginx
+```
