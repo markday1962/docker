@@ -5,11 +5,10 @@ There are two service modes available in Docker  to run a service.
 
 docker service ls allows us to view the mode a service is in.
 
-```bash
+```
 $ docker service ls
 ```
-
-```bash
+```
 ID                  NAME                MODE                REPLICAS            IMAGE                          PORTS
 thgltkarh0eo        dmz-nginx           replicated          2/2                 nginx:latest                   
 c6nxwkqm22v2        viz                 replicated          1/1                 bretfisher/visualizer:latest   *:8080->8080/tcp
@@ -25,11 +24,11 @@ c6nxwkqm22v2        viz                 replicated          1/1                 
 ### Creating a service in global mode
 The command below places one task (app1) on each node in the swarm, if another node joins the swarm the task is automatically added to the node.
 
-```bash
+```
 $ docker service create --mode=global --name app1 nginx
 ```
 
-```bash
+```
 $ docker service ps app1
 
 ID                  NAME                             IMAGE               NODE                DESIRED STATE
@@ -40,11 +39,10 @@ jwn28fy1j0o4        app1.3m6qkso7x8ue5dhfl226scuuo   nginx:latest        swarm-m
 ```
 
 The command below, places one task on each worker node
-```bash
+```
 $ docker service create --mode=global --constraint=node.role==worker --name app1 nginx
 ```
-
-```bash
+```
 $ docker service ps app1
 
 ID                  NAME                             IMAGE               NODE                DESIRED STATE
@@ -59,14 +57,23 @@ $ docker node update --label-add global-worker=true swarm-worker01
 $ docker node update --label-add global-worker=true swarm-worker03
 $ docker service create --mode=global --constraint=node.labels.global-worker==true --name app1 nginx
 ```
-```bash
+```
 ID                  NAME                             IMAGE               NODE                DESIRED STATE       
 fg64kkjtvzbs        app1.jcidnjf630igekxr6ts7d5g78   nginx:latest        swarm-worker01      Running                      
 wa6uss1bhna1        app1.vq77qku219urlh5ufxl4qhroj   nginx:latest        swarm-worker03      Running 
 ```
+For completeness an example using a engine label os==ubuntu, where worker1 and manager have the engine label applied.
+```
+docker service create --name app1 --constraint engine.labels.os==ubuntu --mode=global nginx
+```
+```
+ID                  NAME                             IMAGE               NODE                DESIRED STATE
+i2d09n3y823o        app1.uuoti8hlprvp3lq5hd20q5k7c   nginx:latest        worker1             Running                     
+bp2bkyqhwpu7        app1.15sfrjfjk41jjv447npg1e9a8   nginx:latest        manager             Running 
+```
 
 ### Service Mode in a Stack File
-```bash
+```
 version: "3.1" # or higher
 services:
 	app1:
