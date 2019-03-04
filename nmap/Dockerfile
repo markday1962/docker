@@ -6,6 +6,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN \
     apt-get update -qq -y && \
     apt-get install -y --no-install-recommends apt-utils \ 
-		nmap
+    nmap
 
 CMD ["/bin/bash"]
